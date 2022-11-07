@@ -13,69 +13,89 @@ class Contenedor {
 
   /** Guarda un objeto y devuelve su ID
    * @param {CustomObject} object
-   * @returns {number}
+   * @returns {Promise<number>}
    */
-  save(object) {
-    const objects = this.getAll();
+  async save(object) {
+    const objects = await this.getAll();
 
     const id = (objects[objects.length - 1]?.id ?? 0) + 1
 
     const objectToSave = { id, ...object };
     const objectsToSave = JSON.stringify([ ...objects, objectToSave ])
 
-    fs.writeFileSync(this.filename, objectsToSave)
-    return id;
+    try {
+      await fs.promises.writeFile(this.filename, objectsToSave)
+      return id;
+    } catch (error) {
+      throw new Error(error);
+    }
+
   }
 
   /** Devuelve un elemento en base a un ID
    * @param {number} id
-   * @returns {CustomObject} 
+   * @returns {Promise<CustomObject>} 
    */
-  getById(id) {
-    const objects = this.getAll()
+  async getById(id) {
+    const objects = await this.getAll()
     return objects.find(object => object.id === id);
   }
   
   /** Retrona todos los elementos
-   * @returns {CustomObject[]}
+   * @returns {Promise<CustomObject[]>}
    */
-  getAll() {
-    const objects = fs.readFileSync(this.filename)
-    return JSON.parse(objects)
+  async getAll() {
+    try {
+      const objects = await fs.promises.readFile(this.filename)
+      return JSON.parse(objects)
+    } catch (error) {
+      throw new Error(error);
+    }
   }
   
   /** Borra un elemento en base a su id
    * @param {number} id
    */
-  deleteById(id) {
-    const objects = this.getAll();
+  async deleteById(id) {
+    const objects = await this.getAll();
     const newObjectsArray = objects.filter(object => object.id !== id)
 
-    fs.writeFileSync(this.filename, JSON.stringify(newObjectsArray))
+    try {
+      await fs.promises.writeFile(this.filename, JSON.stringify(newObjectsArray))
+    } catch (error) {
+      throw new Error(error);
+    }
+
   }
   
   /** Borra todos los elementos */
-  deleteAll() {
-    fs.writeFileSync(this.filename, '[]')
+  async deleteAll() {
+    try {
+      await fs.promises.writeFile(this.filename, '[]')
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }
 
-const contenedor = new Contenedor('data.json')
+(async () => {
+  const contenedor = new Contenedor('data.json')
 
-const program1 = contenedor.save({ name: 'Chrome', type: 'navigator' })
-console.log(`The program has been created successfully with id ${program1}`)
+  const program1 = await contenedor.save({ name: 'Chrome', type: 'navigator' })
+  console.log(`The program has been created successfully with id ${program1}`)
 
-const program2 = contenedor.save({ name: 'Firefox', type: 'navigator' })
-console.log(`The program has been created successfully with id ${program2}`)
+  const program2 = await contenedor.save({ name: 'Firefox', type: 'navigator' })
+  console.log(`The program has been created successfully with id ${program2}`)
 
-const program3 = contenedor.save({ name: 'VSCode', type: 'code_editor' })
-console.log(`The program has been created successfully with id ${program3}`)
+  const program3 = await contenedor.save({ name: 'VSCode', type: 'code_editor' })
+  console.log(`The program has been created successfully with id ${program3}`)
 
-console.log(contenedor.getAll())
-console.log(contenedor.getById(3))
+  console.log(await contenedor.getAll())
+  console.log(await contenedor.getById(3))
 
-contenedor.deleteById(2)
-console.log(contenedor.getAll())
+  await contenedor.deleteById(2)
+  console.log(await contenedor.getAll())
 
-contenedor.deleteAll()
-console.log(contenedor.getAll())
+  await contenedor.deleteAll()
+  console.log(await contenedor.getAll())
+})()
