@@ -3,7 +3,7 @@ const fs = require('fs');
 class Contenedor {
   /** @typedef {{id: number, [key: string]: string}} CustomObject */
 
-  filename = '';
+  filename = 'data.json';
 
   /** @param {string} filename */
   constructor(filename) {
