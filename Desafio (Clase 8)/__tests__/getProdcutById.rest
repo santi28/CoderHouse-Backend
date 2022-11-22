@@ -1,0 +1,5 @@
+### Obtiene un producto por su id
+GET http://localhost:8080/api/productos/2
+
+### Obtiene un producto por su id, pero no existe
+GET http://localhost:8080/api/productos/100

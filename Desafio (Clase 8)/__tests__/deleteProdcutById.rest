@@ -1,0 +1,3 @@
+### Borra un presupuesto por su ID
+DELETE http://localhost:8080/api/productos/2
+Content-Type: application/json

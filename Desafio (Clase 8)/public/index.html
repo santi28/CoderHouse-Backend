@@ -1,0 +1,35 @@
+<form id="form">
+  <input type="text" name="title" placeholder="Product title">
+  <input type="text" name="price" placeholder="Product price">
+  <input type="text" name="thumbnail" placeholder="Product thumbnail">
+  <input type="submit" value="Create">
+</form>
+
+<script>
+  const form = document.getElementById('form');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Obtiene todos los campos del formulario
+    const form = e.target;
+    const formData = new FormData(form);
+
+    // Crea un objeto con los datos del formulario
+    const data = {};
+    for (const [key, value] of formData.entries()) {
+      data[key] = value;
+    }
+
+    // Envia los datos al servidor
+    const response = await fetch('/api/productos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    alert('Product created!');
+  });
+</script>

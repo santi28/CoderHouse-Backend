@@ -1,0 +1,9 @@
+### Ingresa un nuevo producto
+POST http://localhost:8080/api/productos
+Content-Type: application/json
+
+{ 
+  "title": "Otro producto",
+  "price": 10,
+  "thumbnail": "https://picsum.photos/1024/1024"
+}

@@ -1,0 +1,2 @@
+### Obitiene todos los productos de la base de datos
+GET http://localhost:8080/api/productos

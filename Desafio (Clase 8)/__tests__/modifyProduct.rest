@@ -1,0 +1,7 @@
+### Actualiza un producto
+PUT http://localhost:8080/api/productos/2
+Content-Type: application/json
+
+{ 
+  "title": "Le cambio el titulo a 2"
+}
