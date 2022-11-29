@@ -1,0 +1,27 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(http-equiv="X-UA-Compatible", content="IE=edge")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Listado de productos
+
+    link(rel="preconnect", href="https://fonts.googleapis.com")
+    link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500&display=swap", rel="stylesheet")
+
+    style 
+      include ../public/listado.css
+  body 
+    h1 Listado de productos
+    if (productos.length > 0)
+      .container 
+        each product in productos
+          article
+            img(src=product.thumbnail , alt=product.title)
+            div
+              h2=product.title
+              span $#{product.price}
+
+    else
+      p No hay productos para mostrar
