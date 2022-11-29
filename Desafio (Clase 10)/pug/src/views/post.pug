@@ -16,9 +16,9 @@ html(lang="en")
     h1 Agregar nuevo producto
     form(action="/productos" method="POST")
       label(for="title") Título
-      input(type="text" name="title" id="title")
+      input(type="text" name="title" id="title" required)
       label(for="price") Precio
-      input(type="number" name="price" id="price")
+      input(type="number" name="price" id="price" )
       label(for="thumbnail") URL de la imagen
       input(type="text" name="thumbnail" id="thumbnail")
       button(type="submit") Agregar producto
