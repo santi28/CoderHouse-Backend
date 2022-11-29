@@ -44,14 +44,18 @@
   </head>
   <body>
     <h1>Listado de productos</h1>
-    <% if (productos.length > 0) { %>
+    {{#if productos.[0]}}
       <div class="container">
-        <% productos.forEach(function(item) { %>
-          <%- include('partials/item', {item: item}) %>
-        <% }) %>
+        {{#each productos}}
+          <article>
+            <img src="{{this.thumbnail}}" alt="{{this.title}}">
+            <h2>{{this.title}}</h2>
+            <span>${{this.price}}</span>
+          </article>
+        {{/each}}
       </div>
-    <%} else { %>
+    {{else}}
       <h2>No hay productos disponibles para mostrar</h2>
-    <% } %>
+    {{/if}}
   </body>
 </html>
