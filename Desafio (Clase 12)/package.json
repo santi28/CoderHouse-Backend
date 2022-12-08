@@ -1,0 +1,26 @@
+{
+  "name": "Desafio (Clase 12)",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "nodemon ./src/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "autoprefixer": "^10.4.13",
+    "express": "^4.18.2",
+    "express-handlebars": "^6.0.6",
+    "handlebars": "^4.7.7",
+    "postcss": "^8.4.19",
+    "postcss-cli": "^10.1.0",
+    "socket.io": "^4.5.4",
+    "tailwindcss": "^3.2.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
