@@ -10,3 +10,13 @@ services:
       - 3306:3306
     volumes:
       - ./data:/var/lib/mysql
+  MariaDB: # Service name
+    image: mariadb:10.5
+    container_name: MariaDB
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
+    volumes:
+      - ./data:/var/lib/mysql
