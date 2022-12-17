@@ -58,16 +58,28 @@ productsRouter.post('/', authMiddleware, async (req, res) => {
   return res.status(201).json(product)
 })
 
-productsRouter.put('/:id', (req, res) => {
+productsRouter.put('/:id', async (req, res) => {
   const { id } = req.params
+  const { name, description, code, picture, price, stock } = req.body
+  const productBody = { name, description, code, picture, price, stock }
 
-  res.send(`This action will update the product with id: ${id}`)
+  try {
+    const productId = await productsContainer.updateById(+id, productBody)
+    const product = await productsContainer.getById(productId)
+
+    return res.json(product)
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ error: 500, message: 'Internal server error' })
+  }
 })
 
-productsRouter.delete('/:id', (req, res) => {
+productsRouter.delete('/:id', async (req, res) => {
   const { id } = req.params
+  await productsContainer.deleteById(+id)
 
-  res.send(`This action will delete the product with id: ${id}`)
+  return res.status(204).end()
 })
 // #endregion
 
