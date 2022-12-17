@@ -6,13 +6,20 @@ const PORT = process.env.PORT || 8080
 const productsRouter = Router()
 const cartRouter = Router()
 
+const authMiddleware = (req, res, next) => {
+  const { authorization } = req.headers
+
+  if (authorization) return next()
+  return res.status(401).json({ error: 401, message: 'Unauthorized' })
+}
+
 // Middlewares
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 // Routes
-app.use('/api/products', productsRouter)
-app.use('/api/users', cartRouter)
+app.use('/api/products', authMiddleware, productsRouter)
+app.use('/api/cart', authMiddleware, cartRouter)
 
 // #region Products Router
 productsRouter.get('/:id?', (req, res) => {
@@ -44,19 +51,25 @@ cartRouter.post('/', (req, res) => {
   res.send('This action will create a new cart')
 })
 
-cartRouter.get('/:id/productos', (req, res) => {
+cartRouter.delete('/:id', (req, res) => {
+  const { id } = req.params
+
+  res.send(`This action will delete the cart with id: ${id}`)
+})
+
+cartRouter.get('/:id/products', (req, res) => {
   const { id } = req.params
 
   res.send(`This action will return all products from cart with id: ${id}`)
 })
 
-cartRouter.post('/:id/productos', (req, res) => {
+cartRouter.post('/:id/products', (req, res) => {
   const { id } = req.params
 
   res.send(`This action will add a new product to cart with id: ${id}`)
 })
 
-cartRouter.delete('/:id/productos/:idProd', (req, res) => {
+cartRouter.delete('/:id/products/:idProd', (req, res) => {
   const { id, idProd } = req.params
 
   res.send(
@@ -66,8 +79,6 @@ cartRouter.delete('/:id/productos/:idProd', (req, res) => {
 // #endregion
 
 app.listen(
-  3000,
-  console.log(
-    `🚀 Server running on url http://localhost:${PORT} 👨‍🚀 Good Luck Astronaut!`
-  )
+  PORT,
+  console.log(`🚀 Server running on url http://localhost:${PORT}`)
 )
