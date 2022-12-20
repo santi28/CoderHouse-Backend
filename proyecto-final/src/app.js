@@ -5,6 +5,7 @@ const app = express()
 const PORT = process.env.PORT || 8080
 
 const productsContainer = new Contenedor('./data/products.json')
+const cartContainer = new Contenedor('./data/cart.json')
 
 const productsRouter = Router()
 const cartRouter = Router()
@@ -22,7 +23,7 @@ app.use(express.urlencoded({ extended: true }))
 
 // Routes
 app.use('/api/products', productsRouter)
-app.use('/api/cart', authMiddleware, cartRouter)
+app.use('/api/cart', cartRouter)
 
 // #region Products Router
 productsRouter.get('/:id?', async (req, res) => {
@@ -84,34 +85,71 @@ productsRouter.delete('/:id', async (req, res) => {
 // #endregion
 
 // #region Cart Router
-cartRouter.post('/', (req, res) => {
-  res.send('This action will create a new cart')
+cartRouter.post('/', async (req, res) => {
+  const cartId = await cartContainer.save({
+    products: [],
+    createdAt: Date.now(),
+    updatedAt: Date.now()
+  })
+
+  return res.status(201).json({ cartId })
 })
 
-cartRouter.delete('/:id', (req, res) => {
+cartRouter.delete('/:id', async (req, res) => {
   const { id } = req.params
 
-  res.send(`This action will delete the cart with id: ${id}`)
+  await cartContainer.deleteById(+id)
+
+  return res.status(204).end()
 })
 
-cartRouter.get('/:id/products', (req, res) => {
+cartRouter.get('/:id/products', async (req, res) => {
   const { id } = req.params
 
-  res.send(`This action will return all products from cart with id: ${id}`)
+  const cart = await cartContainer.getById(+id)
+
+  if (!cart)
+    return res.status(404).json({ error: 404, message: 'Cart not found' })
+
+  return res.json(cart.products)
 })
 
-cartRouter.post('/:id/products', (req, res) => {
+cartRouter.post('/:id/products', async (req, res) => {
   const { id } = req.params
+  const { productId } = req.body
 
-  res.send(`This action will add a new product to cart with id: ${id}`)
+  const product = await productsContainer.getById(+productId)
+
+  if (!product)
+    return res.status(404).json({ error: 404, message: 'Product not found' })
+
+  const cart = await cartContainer.getById(+id)
+
+  if (!cart)
+    return res.status(404).json({ error: 404, message: 'Cart not found' })
+
+  cart.products.push(product)
+  cart.updatedAt = Date.now()
+
+  await cartContainer.updateById(+id, cart)
+
+  return res.status(201).json(cart)
 })
 
-cartRouter.delete('/:id/products/:idProd', (req, res) => {
+cartRouter.delete('/:id/products/:idProd', async (req, res) => {
   const { id, idProd } = req.params
 
-  res.send(
-    `This action will delete the product with id: ${idProd} from cart with id: ${id}`
-  )
+  const cart = await cartContainer.getById(+id)
+
+  if (!cart)
+    return res.status(404).json({ error: 404, message: 'Cart not found' })
+
+  cart.products = cart.products.filter((prod) => prod.id !== +idProd)
+  cart.updatedAt = Date.now()
+
+  await cartContainer.updateById(+id, cart)
+
+  return res.status(204).end()
 })
 // #endregion
 
